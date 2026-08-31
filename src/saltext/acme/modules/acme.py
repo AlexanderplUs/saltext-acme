@@ -82,10 +82,10 @@ def _expires(name):
     cert_file = _cert_file(name, "cert")
     # Use the salt module if available
     if 'tls.cert_info' in __salt__:
-        expiry = __salt__['tls.cert_info'](cert_file)['not_after']
+        expiry = __salt__['tls.cert_info'](cert_file).get("not_after", 0)
         return datetime.datetime.fromtimestamp(expiry)
     elif "x509.read_certificate" in __salt__:
-        expiry = __salt__["x509.read_certificate"](cert_file).get("not_after", 0)
+        expiry = __salt__["x509.read_certificate"](cert_file)["not_after"]
         return datetime.datetime.fromisoformat(expiry)
     # Cobble it together using the openssl binary
     else:
